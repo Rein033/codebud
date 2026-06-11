@@ -1,2 +1,6 @@
 .pio/
 .vscode/
+tools/sim/objc/
+tools/sim/sim
+tools/sim/*.bmp
+tools/sim/*.png

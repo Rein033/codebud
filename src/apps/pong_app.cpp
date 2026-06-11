@@ -73,7 +73,7 @@ void create(lv_obj_t *parent) {
     ball = lv_obj_create(parent);
     lv_obj_remove_style_all(ball);
     lv_obj_set_size(ball, BALL_SIZE, BALL_SIZE);
-    lv_obj_set_style_bg_color(ball, lv_color_white(), 0);
+    lv_obj_set_style_bg_color(ball, lv_palette_main(LV_PALETTE_BLUE), 0);
     lv_obj_set_style_bg_opa(ball, LV_OPA_COVER, 0);
     lv_obj_set_style_radius(ball, LV_RADIUS_CIRCLE, 0);
 
@@ -81,7 +81,7 @@ void create(lv_obj_t *parent) {
     paddle = lv_obj_create(parent);
     lv_obj_remove_style_all(paddle);
     lv_obj_set_size(paddle, PADDLE_W, PADDLE_H);
-    lv_obj_set_style_bg_color(paddle, lv_color_white(), 0);
+    lv_obj_set_style_bg_color(paddle, lv_palette_main(LV_PALETTE_BLUE), 0);
     lv_obj_set_style_bg_opa(paddle, LV_OPA_COVER, 0);
     lv_obj_set_pos(paddle, paddle_x, area_h - PADDLE_H);
 

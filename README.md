@@ -56,3 +56,17 @@ pio run                 # build
 pio run -t upload       # build + flash (USB)
 pio device monitor       # serial monitor
 ```
+
+## Native simulator (no hardware needed)
+
+The launcher and apps are mostly hardware-independent, so they can be built
+natively with `g++`/`gcc` and run on your PC to preview the UI as BMP
+screenshots:
+
+```sh
+pio run                 # first, fetch LVGL into .pio/libdeps/
+tools/sim/build.sh
+```
+
+This writes `tools/sim/out_home.bmp` plus one screenshot per app
+(`out_clock.bmp`, `out_pomodoro.bmp`, `out_pong.bmp`, `out_sensor.bmp`).
