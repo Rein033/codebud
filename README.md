@@ -4,6 +4,9 @@ A small "kodeOS"-style launcher for an ESP32 + ILI9341 (SPI) TFT display, inspir
 by [Kode Dot](https://www.kode.diy). It boots into a home screen with app tiles;
 tapping a tile opens that app full-screen with a "Back" button to return.
 
+New to this project? See [BUILD_GUIDE.md](BUILD_GUIDE.md) for a complete
+from-scratch guide: parts list, wiring, flashing, and pairing with the app.
+
 Built with [PlatformIO](https://platformio.org/), Arduino framework, [LVGL](https://lvgl.io/) v8
 for the UI, [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) as the display driver and
 [XPT2046_Touchscreen](https://github.com/PaulStoffregen/XPT2046_Touchscreen) for touch input.
