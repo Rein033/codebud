@@ -9,15 +9,28 @@ void setup() {
 
   tft.init();
   tft.setRotation(0);
-  tft.fillScreen(TFT_BLACK);
 
+  Serial.println("CodeBud display test started");
+}
+
+void loop() {
+  tft.fillScreen(TFT_RED);
+  Serial.println("RED");
+  delay(1000);
+
+  tft.fillScreen(TFT_GREEN);
+  Serial.println("GREEN");
+  delay(1000);
+
+  tft.fillScreen(TFT_BLUE);
+  Serial.println("BLUE");
+  delay(1000);
+
+  tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextSize(2);
   tft.setCursor(20, SCREEN_HEIGHT / 2 - 10);
   tft.println("CodeBud booted");
-
-  Serial.println("CodeBud booted");
-}
-
-void loop() {
+  Serial.println("TEXT");
+  delay(2000);
 }
