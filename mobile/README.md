@@ -12,39 +12,24 @@ Energy (BLE), using [flutter_blue_plus](https://pub.dev/packages/flutter_blue_pl
 
 ## Setup
 
-This directory contains `pubspec.yaml` and `lib/`, but not the generated
-`android/`/`ios/` platform projects (they need to be created with your local
-Flutter SDK version):
+The Android and iOS platform projects are included. Required BLE permissions
+are already set up:
+
+- Android: `BLUETOOTH_SCAN`/`BLUETOOTH_CONNECT` (Android 12+) and legacy
+  `BLUETOOTH`/`BLUETOOTH_ADMIN`/`ACCESS_FINE_LOCATION` (Android <= 11) in
+  `android/app/src/main/AndroidManifest.xml`
+- iOS: `NSBluetoothAlwaysUsageDescription` in `ios/Runner/Info.plist`
 
 ```sh
 cd mobile
-flutter create .          # generates android/, ios/, etc. for this project
 flutter pub get
-```
-
-### Android permissions
-
-BLE scanning/connecting on Android 12+ requires runtime permissions. Add to
-`android/app/src/main/AndroidManifest.xml`:
-
-```xml
-<uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
-<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-```
-
-### iOS permissions
-
-Add to `ios/Runner/Info.plist`:
-
-```xml
-<key>NSBluetoothAlwaysUsageDescription</key>
-<string>CodeBud gebruikt Bluetooth om met je device te verbinden.</string>
 ```
 
 ## Run
 
 ```sh
-flutter run
+flutter run                 # debug, on a connected device/emulator
+flutter build apk --release # release APK: build/app/outputs/flutter-apk/app-release.apk
 ```
 
 ## BLE protocol
