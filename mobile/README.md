@@ -32,6 +32,18 @@ flutter run                 # debug, on a connected device/emulator
 flutter build apk --release # release APK: build/app/outputs/flutter-apk/app-release.apk
 ```
 
+## Prebuilt APK
+
+A prebuilt release APK is checked into [`dist/codebud-companion.apk`](../dist/codebud-companion.apk)
+for convenience. Download it directly from your phone's browser:
+
+```
+https://github.com/Rein033/codebud/raw/claude/esp32-dit-na-3fiob3/dist/codebud-companion.apk
+```
+
+After downloading, open the file to install (allow "install from unknown
+sources" if prompted).
+
 ## BLE protocol
 
 Matches `src/ble_service.cpp` in the firmware:
