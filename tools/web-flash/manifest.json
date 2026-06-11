@@ -6,9 +6,9 @@
     {
       "chipFamily": "ESP32",
       "parts": [
-        { "path": "firmware/bootloader.bin", "offset": 4096 },
-        { "path": "firmware/partitions.bin", "offset": 32768 },
-        { "path": "firmware/firmware.bin", "offset": 65536 }
+        { "path": "https://cdn.jsdelivr.net/gh/Rein033/codebud@claude/esp32-dit-na-3fiob3/tools/web-flash/firmware/bootloader.bin", "offset": 4096 },
+        { "path": "https://cdn.jsdelivr.net/gh/Rein033/codebud@claude/esp32-dit-na-3fiob3/tools/web-flash/firmware/partitions.bin", "offset": 32768 },
+        { "path": "https://cdn.jsdelivr.net/gh/Rein033/codebud@claude/esp32-dit-na-3fiob3/tools/web-flash/firmware/firmware.bin", "offset": 65536 }
       ]
     }
   ]
