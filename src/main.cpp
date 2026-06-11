@@ -4,6 +4,7 @@
 #include <XPT2046_Touchscreen.h>
 #include <lvgl.h>
 
+#include "ble_service.h"
 #include "config.h"
 #include "launcher.h"
 
@@ -63,11 +64,13 @@ void setup() {
     indev_drv.read_cb = touchpad_read;
     lv_indev_drv_register(&indev_drv);
 
+    ble_init();
     launcher_show();
 }
 
 void loop() {
     lv_timer_handler();
     launcher_update();
+    ble_process();
     delay(5);
 }

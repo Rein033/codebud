@@ -84,8 +84,8 @@ int main() {
     settle();
     write_bmp("tools/sim/out_home.bmp");
 
-    const char *names[] = {"clock", "pomodoro", "pong", "sensor"};
-    for (int i = 0; i < 4; i++) {
+    const char *names[] = {"clock", "pomodoro", "pong", "sensor", "messages"};
+    for (int i = 0; i < 5; i++) {
         lv_obj_t *home = lv_scr_act();
         lv_obj_t *tile = lv_obj_get_child(home, i);
         lv_event_send(tile, LV_EVENT_CLICKED, nullptr);

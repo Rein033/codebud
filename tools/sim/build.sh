@@ -16,7 +16,7 @@ gcc -std=gnu11 -O1 -c -Iinclude -Itools/sim/c_shim -I.pio/libdeps/esp32dev/lvgl 
 mv ./*.o tools/sim/objc/
 
 g++ -std=gnu++17 -O1 -Iinclude -Itools/sim -Isrc -I.pio/libdeps/esp32dev/lvgl \
-    tools/sim/main_sim.cpp src/launcher.cpp src/apps/*.cpp tools/sim/objc/*.o \
+    tools/sim/main_sim.cpp tools/sim/ble_stub.cpp src/launcher.cpp src/apps/*.cpp tools/sim/objc/*.o \
     -o tools/sim/sim -lm
 
 ./tools/sim/sim

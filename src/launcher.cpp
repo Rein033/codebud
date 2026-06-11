@@ -1,18 +1,21 @@
 #include "launcher.h"
 
+#include <strings.h>
+
 #include "apps/clock_app.h"
+#include "apps/notify_app.h"
 #include "apps/pomodoro_app.h"
 #include "apps/pong_app.h"
 #include "apps/sensor_app.h"
+#include "ble_service.h"
 
 namespace {
-App *apps[] = {&clock_app, &pomodoro_app, &pong_app, &sensor_app};
+App *apps[] = {&clock_app, &pomodoro_app, &pong_app, &sensor_app, &notify_app};
 constexpr size_t NUM_APPS = sizeof(apps) / sizeof(apps[0]);
 
 App *active_app = nullptr;
 
-void tile_cb(lv_event_t *e) {
-    App *app = static_cast<App *>(lv_event_get_user_data(e));
+void open_app(App *app) {
     active_app = app;
 
     lv_obj_t *scr = lv_obj_create(nullptr);
@@ -47,6 +50,11 @@ void tile_cb(lv_event_t *e) {
     app->create(content);
 
     lv_scr_load(scr);
+    ble_set_status(app->name);
+}
+
+void tile_cb(lv_event_t *e) {
+    open_app(static_cast<App *>(lv_event_get_user_data(e)));
 }
 }  // namespace
 
@@ -73,8 +81,19 @@ void launcher_show() {
     }
 
     lv_scr_load(scr);
+    ble_set_status("home");
 }
 
 void launcher_update() {
     if (active_app && active_app->update) active_app->update();
+}
+
+void launcher_open_app_by_name(const char *name) {
+    for (size_t i = 0; i < NUM_APPS; i++) {
+        if (strcasecmp(apps[i]->name, name) == 0) {
+            if (active_app && active_app->destroy) active_app->destroy();
+            open_app(apps[i]);
+            return;
+        }
+    }
 }

@@ -6,6 +6,9 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <string>
+
+using String = std::string;
 
 #define INPUT 0x01
 #define HIGH 1

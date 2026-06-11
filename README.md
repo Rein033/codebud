@@ -14,6 +14,7 @@ for the UI, [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) as the display driver
 - **Pomodoro** - 25 minute countdown timer with start/pause/reset
 - **Pong** - tiny single-player Pong, drag to move the paddle
 - **Sensor** - live bar graph of an analog input (LDR, potentiometer, ...)
+- **Messages** - shows the latest notification pushed from the companion app
 
 Add new apps by implementing the `App` struct in `src/apps/app.h` and registering
 it in the `apps[]` array in `src/launcher.cpp`.
@@ -48,6 +49,13 @@ and resolution build flags in `platformio.ini` (`ST7735_DRIVER`, `TFT_WIDTH`,
 default values (`200-3700` for X, `240-3800` for Y). If touches feel off or
 inverted, tweak the `map()` calls in `touchpad_read()` or the touch
 `setRotation()` value to match your panel's orientation.
+
+## Companion mobile app (BLE)
+
+The device advertises a BLE GATT service that lets a phone open apps remotely
+and push notifications, shown in the **Messages** app. See `mobile/` for a
+Flutter app, and `src/ble_service.cpp` / `mobile/README.md` for the protocol
+(service UUID `a07498ca-ad5b-474e-940d-16f1fbe7e8cd`).
 
 ## Build & flash
 
