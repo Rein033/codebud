@@ -51,3 +51,19 @@ void drawTile(const Rect &r, uint16_t color, IconDrawFn drawIcon, const char *la
 
   tft.setFont(); // restore default font
 }
+
+void drawCenteredText(const Rect &r, const char *text, const GFXfont *font, uint16_t color, uint16_t bg) {
+  tft.fillRect(r.x, r.y, r.w, r.h, bg);
+
+  tft.setFont(font);
+  tft.setTextSize(1);
+  tft.setTextColor(color);
+
+  int16_t x1, y1;
+  uint16_t w, h;
+  tft.getTextBounds(text, 0, 0, &x1, &y1, &w, &h);
+  tft.setCursor(r.x + (r.w - (int16_t)w) / 2 - x1, r.y + (r.h + (int16_t)h) / 2);
+  tft.print(text);
+
+  tft.setFont(); // restore default font
+}

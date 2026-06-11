@@ -3,7 +3,7 @@
 #include "ble_service.h"
 #include <Fonts/FreeSansBold12pt7b.h>
 
-static const App *apps[] = {&clockApp, &pomodoroApp, &pongApp, &sensorApp, &notifyApp};
+static const App *apps[] = {&clockApp, &pomodoroApp, &pongApp, &sensorApp, &notifyApp, &stopwatchApp, &diceApp, &counterApp};
 static const int numApps = sizeof(apps) / sizeof(apps[0]);
 
 static const App *activeApp = nullptr;
@@ -13,7 +13,7 @@ static const int16_t headerHeight = 40;
 static const Rect backBtn = {0, 0, 70, headerHeight};
 static const int16_t tileMargin = 10;
 static const int16_t tileW = (SCREEN_WIDTH - tileMargin * 3) / 2;
-static const int16_t tileH = 70;
+static const int16_t tileH = 60;
 static const int16_t tilesTop = headerHeight + 10;
 
 static void drawHeader(const char *title, bool showBack) {

@@ -34,3 +34,7 @@ void drawButton(const Rect &r, const char *label, uint16_t bg, uint16_t fg);
 
 // Draws a colored app tile with an icon and a label underneath.
 void drawTile(const Rect &r, uint16_t color, IconDrawFn drawIcon, const char *label);
+
+// Clears rect r with bg, then draws text centered in it using font
+// (pass nullptr for the built-in GFX font).
+void drawCenteredText(const Rect &r, const char *text, const GFXfont *font, uint16_t color, uint16_t bg = ILI9341_BLACK);

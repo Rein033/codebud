@@ -1,11 +1,14 @@
 #include "apps.h"
 #include "ui.h"
+#include <Fonts/FreeSansBold24pt7b.h>
+#include <Fonts/FreeSans12pt7b.h>
 
 // ---------------------------------------------------------------------
 // Clock - uptime clock (HH:MM:SS since boot, no RTC needed)
 // ---------------------------------------------------------------------
 
 static unsigned long clockLastUpdate = 0;
+static const Rect clockDisplay = {10, 120, SCREEN_WIDTH - 20, 60};
 
 static void clockOpen() {
   clockLastUpdate = 0;
@@ -25,11 +28,7 @@ static void clockUpdate() {
   char buf[16];
   snprintf(buf, sizeof(buf), "%02d:%02d:%02d", h, m, s);
 
-  tft.fillRect(20, 140, 200, 40, ILI9341_BLACK);
-  tft.setTextSize(4);
-  tft.setTextColor(ILI9341_GREEN);
-  tft.setCursor(20, 140);
-  tft.print(buf);
+  drawCenteredText(clockDisplay, buf, &FreeSansBold24pt7b, ILI9341_GREEN);
 }
 
 static void clockTouch(int16_t x, int16_t y) {}
@@ -48,6 +47,7 @@ static unsigned long pomodoroLastTick = 0;
 
 static const Rect pomodoroStartBtn = {20, 220, 90, 40};
 static const Rect pomodoroResetBtn = {130, 220, 90, 40};
+static const Rect pomodoroDisplay = {10, 90, SCREEN_WIDTH - 20, 80};
 
 static void pomodoroDrawTime() {
   int m = pomodoroRemaining / 60;
@@ -55,11 +55,7 @@ static void pomodoroDrawTime() {
   char buf[8];
   snprintf(buf, sizeof(buf), "%02d:%02d", m, s);
 
-  tft.fillRect(40, 100, 160, 60, ILI9341_BLACK);
-  tft.setTextSize(6);
-  tft.setTextColor(ILI9341_WHITE);
-  tft.setCursor(40, 100);
-  tft.print(buf);
+  drawCenteredText(pomodoroDisplay, buf, &FreeSansBold24pt7b, ILI9341_WHITE);
 }
 
 static void pomodoroOpen() {
@@ -178,6 +174,7 @@ const App pongApp = {"Pong", rgb565(25, 60, 180), iconPong, pongOpen, pongUpdate
 // ---------------------------------------------------------------------
 
 static const Rect sensorBar = {40, 100, 160, SCREEN_HEIGHT - 140};
+static const Rect sensorValueDisplay = {10, 50, SCREEN_WIDTH - 20, 40};
 static unsigned long sensorLastUpdate = 0;
 
 static void sensorOpen() {
@@ -198,12 +195,8 @@ static void sensorUpdate() {
   tft.fillRect(sensorBar.x + 2, sensorBar.y + sensorBar.h - 2 - barH, sensorBar.w - 4, barH, ILI9341_ORANGE);
 
   char buf[8];
-  snprintf(buf, sizeof(buf), "%4d", value);
-  tft.fillRect(40, 60, 100, 30, ILI9341_BLACK);
-  tft.setTextSize(2);
-  tft.setTextColor(ILI9341_WHITE);
-  tft.setCursor(40, 60);
-  tft.print(buf);
+  snprintf(buf, sizeof(buf), "%d", value);
+  drawCenteredText(sensorValueDisplay, buf, &FreeSans12pt7b, ILI9341_WHITE);
 }
 
 static void sensorTouch(int16_t x, int16_t y) {}
@@ -253,3 +246,197 @@ static void notifyTouch(int16_t x, int16_t y) {}
 static void notifyDrag(int16_t x, int16_t y) {}
 
 const App notifyApp = {"Messages", rgb565(106, 27, 154), iconMessages, notifyOpen, notifyUpdate, notifyTouch, notifyDrag};
+
+// ---------------------------------------------------------------------
+// Stopwatch - count-up timer with start/pause/reset
+// ---------------------------------------------------------------------
+
+static unsigned long stopwatchElapsed = 0; // accumulated milliseconds while paused
+static unsigned long stopwatchStartedAt = 0;
+static bool stopwatchRunning = false;
+
+static const Rect stopwatchStartBtn = {20, 220, 90, 40};
+static const Rect stopwatchResetBtn = {130, 220, 90, 40};
+static const Rect stopwatchDisplay = {10, 90, SCREEN_WIDTH - 20, 80};
+
+static void stopwatchDrawTime() {
+  unsigned long total = stopwatchElapsed;
+  if (stopwatchRunning) total += millis() - stopwatchStartedAt;
+
+  unsigned long secs = total / 1000;
+  int m = (secs / 60) % 60;
+  int s = secs % 60;
+  char buf[8];
+  snprintf(buf, sizeof(buf), "%02d:%02d", m, s);
+
+  drawCenteredText(stopwatchDisplay, buf, &FreeSansBold24pt7b, ILI9341_WHITE);
+}
+
+static void stopwatchOpen() {
+  stopwatchElapsed = 0;
+  stopwatchRunning = false;
+
+  tft.fillRect(0, 40, SCREEN_WIDTH, SCREEN_HEIGHT - 40, ILI9341_BLACK);
+  stopwatchDrawTime();
+  drawButton(stopwatchStartBtn, "Start", ILI9341_DARKGREEN, ILI9341_WHITE);
+  drawButton(stopwatchResetBtn, "Reset", ILI9341_MAROON, ILI9341_WHITE);
+}
+
+static void stopwatchUpdate() {
+  if (!stopwatchRunning) return;
+
+  static unsigned long lastDraw = 0;
+  unsigned long now = millis();
+  if (now - lastDraw < 200) return;
+  lastDraw = now;
+
+  stopwatchDrawTime();
+}
+
+static void stopwatchTouch(int16_t x, int16_t y) {
+  if (stopwatchStartBtn.contains(x, y)) {
+    if (stopwatchRunning) {
+      stopwatchElapsed += millis() - stopwatchStartedAt;
+      stopwatchRunning = false;
+    } else {
+      stopwatchStartedAt = millis();
+      stopwatchRunning = true;
+    }
+    drawButton(stopwatchStartBtn, stopwatchRunning ? "Pause" : "Start", ILI9341_DARKGREEN, ILI9341_WHITE);
+    stopwatchDrawTime();
+  } else if (stopwatchResetBtn.contains(x, y)) {
+    stopwatchElapsed = 0;
+    stopwatchRunning = false;
+    drawButton(stopwatchStartBtn, "Start", ILI9341_DARKGREEN, ILI9341_WHITE);
+    stopwatchDrawTime();
+  }
+}
+
+static void stopwatchDrag(int16_t x, int16_t y) {}
+
+const App stopwatchApp = {"Stopwatch", rgb565(230, 81, 0), iconStopwatch, stopwatchOpen, stopwatchUpdate, stopwatchTouch, stopwatchDrag};
+
+// ---------------------------------------------------------------------
+// Dice - tap to roll a die or flip a coin
+// ---------------------------------------------------------------------
+
+static const Rect diceRollBtn = {20, 220, 90, 40};
+static const Rect diceCoinBtn = {130, 220, 90, 40};
+static const Rect diceDisplay = {(SCREEN_WIDTH - 100) / 2, 70, 100, 100};
+
+static int diceValue = 1;
+static bool diceShowCoin = false;
+static bool diceCoinHeads = true;
+
+static void diceDrawPips(int value) {
+  int16_t s = diceDisplay.w;
+  int16_t r = 6;
+  int16_t left = diceDisplay.x + s / 4;
+  int16_t right = diceDisplay.x + s - s / 4;
+  int16_t top = diceDisplay.y + s / 4;
+  int16_t bottom = diceDisplay.y + s - s / 4;
+  int16_t cx = diceDisplay.x + s / 2;
+  int16_t cy = diceDisplay.y + s / 2;
+
+  if (value == 1 || value == 3 || value == 5) {
+    tft.fillCircle(cx, cy, r, ILI9341_BLACK);
+  }
+  if (value >= 2) {
+    tft.fillCircle(left, top, r, ILI9341_BLACK);
+    tft.fillCircle(right, bottom, r, ILI9341_BLACK);
+  }
+  if (value >= 4) {
+    tft.fillCircle(right, top, r, ILI9341_BLACK);
+    tft.fillCircle(left, bottom, r, ILI9341_BLACK);
+  }
+  if (value == 6) {
+    tft.fillCircle(left, cy, r, ILI9341_BLACK);
+    tft.fillCircle(right, cy, r, ILI9341_BLACK);
+  }
+}
+
+static void diceDraw() {
+  tft.fillRect(diceDisplay.x, diceDisplay.y, diceDisplay.w, diceDisplay.h, ILI9341_BLACK);
+
+  if (diceShowCoin) {
+    Rect r = diceDisplay;
+    drawCenteredText(r, diceCoinHeads ? "KOP" : "MUNT", &FreeSansBold24pt7b, ILI9341_WHITE);
+  } else {
+    tft.fillRoundRect(diceDisplay.x, diceDisplay.y, diceDisplay.w, diceDisplay.h, 10, ILI9341_WHITE);
+    diceDrawPips(diceValue);
+  }
+}
+
+static void diceOpen() {
+  randomSeed(micros());
+  diceValue = 1;
+  diceShowCoin = false;
+
+  tft.fillRect(0, 40, SCREEN_WIDTH, SCREEN_HEIGHT - 40, ILI9341_BLACK);
+  diceDraw();
+  drawButton(diceRollBtn, "Dobbel", ILI9341_DARKGREEN, ILI9341_WHITE);
+  drawButton(diceCoinBtn, "Munt", ILI9341_NAVY, ILI9341_WHITE);
+}
+
+static void diceUpdate() {}
+
+static void diceTouch(int16_t x, int16_t y) {
+  if (diceRollBtn.contains(x, y)) {
+    diceValue = random(1, 7);
+    diceShowCoin = false;
+    diceDraw();
+  } else if (diceCoinBtn.contains(x, y)) {
+    diceCoinHeads = random(0, 2) == 0;
+    diceShowCoin = true;
+    diceDraw();
+  }
+}
+
+static void diceDrag(int16_t x, int16_t y) {}
+
+const App diceApp = {"Dice", rgb565(93, 64, 55), iconDice, diceOpen, diceUpdate, diceTouch, diceDrag};
+
+// ---------------------------------------------------------------------
+// Counter - simple +/- tally counter
+// ---------------------------------------------------------------------
+
+static long counterValue = 0;
+static const Rect counterDisplay = {10, 90, SCREEN_WIDTH - 20, 80};
+static const Rect counterMinusBtn = {10, 220, 66, 40};
+static const Rect counterResetBtn = {87, 220, 66, 40};
+static const Rect counterPlusBtn = {164, 220, 66, 40};
+
+static void counterDrawValue() {
+  char buf[12];
+  snprintf(buf, sizeof(buf), "%ld", counterValue);
+  drawCenteredText(counterDisplay, buf, &FreeSansBold24pt7b, ILI9341_WHITE);
+}
+
+static void counterOpen() {
+  counterValue = 0;
+
+  tft.fillRect(0, 40, SCREEN_WIDTH, SCREEN_HEIGHT - 40, ILI9341_BLACK);
+  counterDrawValue();
+  drawButton(counterMinusBtn, "-", ILI9341_MAROON, ILI9341_WHITE);
+  drawButton(counterResetBtn, "Reset", ILI9341_DARKGREY, ILI9341_WHITE);
+  drawButton(counterPlusBtn, "+", ILI9341_DARKGREEN, ILI9341_WHITE);
+}
+
+static void counterUpdate() {}
+
+static void counterTouch(int16_t x, int16_t y) {
+  if (counterMinusBtn.contains(x, y)) {
+    counterValue--;
+    counterDrawValue();
+  } else if (counterPlusBtn.contains(x, y)) {
+    counterValue++;
+    counterDrawValue();
+  } else if (counterResetBtn.contains(x, y)) {
+    counterValue = 0;
+    counterDrawValue();
+  }
+}
+
+static void counterDrag(int16_t x, int16_t y) {}
+
+const App counterApp = {"Counter", rgb565(55, 71, 79), iconCounter, counterOpen, counterUpdate, counterTouch, counterDrag};

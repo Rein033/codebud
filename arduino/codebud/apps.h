@@ -20,6 +20,9 @@ extern const App pomodoroApp;
 extern const App pongApp;
 extern const App sensorApp;
 extern const App notifyApp;
+extern const App stopwatchApp;
+extern const App diceApp;
+extern const App counterApp;
 
 // Updates the message shown by the "Messages" app.
 void notifySetMessage(const char *title, const char *msg);
