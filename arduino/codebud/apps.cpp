@@ -35,7 +35,7 @@ static void clockUpdate() {
 static void clockTouch(int16_t x, int16_t y) {}
 static void clockDrag(int16_t x, int16_t y) {}
 
-const App clockApp = {"Clock", clockOpen, clockUpdate, clockTouch, clockDrag};
+const App clockApp = {"Clock", rgb565(0, 121, 140), iconClock, clockOpen, clockUpdate, clockTouch, clockDrag};
 
 // ---------------------------------------------------------------------
 // Pomodoro - 25 minute countdown timer with start/pause/reset
@@ -100,7 +100,7 @@ static void pomodoroTouch(int16_t x, int16_t y) {
 
 static void pomodoroDrag(int16_t x, int16_t y) {}
 
-const App pomodoroApp = {"Pomodoro", pomodoroOpen, pomodoroUpdate, pomodoroTouch, pomodoroDrag};
+const App pomodoroApp = {"Pomodoro", rgb565(198, 40, 40), iconPomodoro, pomodoroOpen, pomodoroUpdate, pomodoroTouch, pomodoroDrag};
 
 // ---------------------------------------------------------------------
 // Pong - tiny single-player Pong, drag to move the paddle
@@ -171,7 +171,7 @@ static void pongDrag(int16_t x, int16_t y) {
   if (pongPaddleX != oldX) pongDrawPaddle(oldX);
 }
 
-const App pongApp = {"Pong", pongOpen, pongUpdate, pongTouch, pongDrag};
+const App pongApp = {"Pong", rgb565(25, 60, 180), iconPong, pongOpen, pongUpdate, pongTouch, pongDrag};
 
 // ---------------------------------------------------------------------
 // Sensor - live bar graph of an analog input (LDR, potentiometer, ...)
@@ -209,7 +209,7 @@ static void sensorUpdate() {
 static void sensorTouch(int16_t x, int16_t y) {}
 static void sensorDrag(int16_t x, int16_t y) {}
 
-const App sensorApp = {"Sensor", sensorOpen, sensorUpdate, sensorTouch, sensorDrag};
+const App sensorApp = {"Sensor", rgb565(46, 125, 50), iconSensor, sensorOpen, sensorUpdate, sensorTouch, sensorDrag};
 
 // ---------------------------------------------------------------------
 // Messages - shows the latest notification pushed from the companion app
@@ -252,4 +252,4 @@ static void notifyUpdate() {
 static void notifyTouch(int16_t x, int16_t y) {}
 static void notifyDrag(int16_t x, int16_t y) {}
 
-const App notifyApp = {"Messages", notifyOpen, notifyUpdate, notifyTouch, notifyDrag};
+const App notifyApp = {"Messages", rgb565(106, 27, 154), iconMessages, notifyOpen, notifyUpdate, notifyTouch, notifyDrag};

@@ -2,8 +2,13 @@
 
 #include <stdint.h>
 
+#include "ui.h"
+#include "icons.h"
+
 struct App {
   const char *name;
+  uint16_t color;
+  IconDrawFn drawIcon;
   void (*onOpen)();
   void (*onUpdate)();
   void (*onTouch)(int16_t x, int16_t y);
