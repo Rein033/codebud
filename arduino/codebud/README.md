@@ -24,8 +24,6 @@ Ga naar **Tools > Manage Libraries** en installeer:
 - **Adafruit GFX Library**
 - **Adafruit ILI9341**
 - **XPT2046_Touchscreen** (door Paul Stoffregen)
-- **NimBLE-Arduino** (door h2zero)
-- **ArduinoJson** (door Benoit Blanchon)
 
 ## 3. Sketch openen
 
@@ -65,10 +63,19 @@ Werkt touch verkeerd om of verschoven? Pas de `map()`-aanroepen in
 `ui.cpp` (`readTouch()`) aan, of probeer `ts.setRotation(...)` in
 `codebud.ino` (0-3).
 
-## BLE companion app
+## BLE companion app (momenteel uitgeschakeld)
 
-Het apparaat adverteert als "CodeBud" met dezelfde BLE-service/UUIDs als
-de PlatformIO-versie:
+`ble_service.cpp` bevat nu lege stub-functies. De NimBLE-Arduino 1.4.x
+library crasht op nieuwere ESP32 Arduino cores
+(`esp_bt_controller_init` -> `ESP_ERR_INVALID_STATE`), dus BLE is
+uitgeschakeld zodat de launcher en apps zonder problemen werken.
+
+Om BLE later weer aan te zetten, zal de implementatie moeten worden
+bijgewerkt naar de NimBLE-Arduino 2.x API (andere callback-signatures),
+of moet je een oudere ESP32 board package (2.x) gebruiken die compatibel
+is met NimBLE 1.4.x.
+
+De geplande BLE-service/UUIDs (zelfde als de PlatformIO-versie):
 
 ```json
 {"cmd": "open", "app": "Pong"}
